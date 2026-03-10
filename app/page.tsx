@@ -22,8 +22,10 @@ export default function Home() {
   const [copied, setCopied] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const [mode, setMode] = useState<'auto' | 'custom'>('auto');
+  
+  // State baru untuk menyimpan pesan error yang elegan
+  const [errorMsg, setErrorMsg] = useState('');
 
-  // Format: stringacak.angka@domain (Sesuai permintaan)
   const generateStringNumberEmail = () => {
     const randomStr = Math.random().toString(36).substring(2, 7);
     const randomNum = Math.floor(Math.random() * 900) + 100;
@@ -82,7 +84,13 @@ export default function Home() {
 
   const saveCustomEmail = () => {
     const name = customName.trim().toLowerCase().replace(/[^a-z0-9.]/g, '');
-    if (!name) return alert('Nama email tidak boleh kosong!');
+    
+    // Validasi modern: Set state error tanpa memunculkan alert norak
+    if (!name) {
+      setErrorMsg('Nama email tidak boleh kosong');
+      return;
+    }
+    
     applyNewEmail(`${name}@${selectedDomain}`);
   };
 
@@ -92,13 +100,13 @@ export default function Home() {
     setEmails([]);
     setSelectedEmail(null);
     setCustomName('');
+    setErrorMsg(''); // Bersihkan pesan error jika ada
     setMode('auto');
   };
 
   return (
     <main className="min-h-screen bg-[#f4f6f8] text-gray-800 font-sans">
       
-      {/* NAVBAR KLASIK */}
       <nav className="bg-white border-b border-gray-300 shadow-sm sticky top-0 z-50">
         <div className="max-w-5xl mx-auto px-4 h-14 flex items-center">
           <div className="flex items-center gap-2 text-blue-700">
@@ -110,7 +118,6 @@ export default function Home() {
 
       <div className="max-w-5xl mx-auto px-4 py-6">
         
-        {/* PANEL EMAIL AKTIF */}
         <div className="bg-white border border-gray-300 rounded shadow-sm mb-6">
           <div className="bg-gray-50 border-b border-gray-300 px-4 py-3">
             <h2 className="text-xs font-bold text-gray-500 uppercase tracking-wider">Alamat Email Anda</h2>
@@ -119,14 +126,12 @@ export default function Home() {
           <div className="p-5 md:p-8 text-center">
             {mode === 'auto' ? (
               <div className="max-w-2xl mx-auto">
-                {/* Teks Email yg responsif di HP */}
                 <div className="bg-[#f8f9fa] border border-gray-200 p-4 mb-5 rounded">
                   <p className="text-xl md:text-3xl font-mono font-bold text-gray-800 break-all leading-tight">
                     {activeEmail || 'Memuat...'}
                   </p>
                 </div>
                 
-                {/* Tombol-tombol yg rapi di HP (Grid 2 kolom) maupun PC (Sejajar) */}
                 <div className="grid grid-cols-2 md:flex md:justify-center gap-2 md:gap-3">
                   <button onClick={handleCopy} className={`flex items-center justify-center gap-2 px-4 py-2.5 border rounded font-medium transition ${copied ? 'bg-green-50 border-green-500 text-green-700' : 'bg-white border-gray-300 hover:bg-gray-50 text-gray-700'}`}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
@@ -140,23 +145,33 @@ export default function Home() {
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
                     Acak Baru
                   </button>
-                  <button onClick={() => setMode('custom')} className="flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 rounded font-medium transition">
+                  <button onClick={() => { setMode('custom'); setErrorMsg(''); }} className="flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 rounded font-medium transition">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
                     Custom
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="max-w-2xl mx-auto flex flex-col md:flex-row gap-2">
-                <input 
-                  type="text" 
-                  className="flex-grow px-4 py-2.5 border border-gray-300 rounded outline-none focus:border-blue-500 font-mono text-center md:text-left" 
-                  placeholder="nama.bebas" 
-                  value={customName}
-                  onChange={(e) => setCustomName(e.target.value)}
-                />
+              <div className="max-w-2xl mx-auto flex flex-col md:flex-row gap-2 items-start">
+                {/* Kolom Input & Pesan Error */}
+                <div className="flex flex-col w-full">
+                  <input 
+                    type="text" 
+                    className={`w-full px-4 py-2.5 border ${errorMsg ? 'border-red-500 bg-red-50' : 'border-gray-300'} rounded outline-none focus:border-blue-500 font-mono text-center md:text-left transition-colors`} 
+                    placeholder="nama.bebas" 
+                    value={customName}
+                    onChange={(e) => {
+                      setCustomName(e.target.value);
+                      if (errorMsg) setErrorMsg(''); // Hapus tulisan error saat user mulai ngetik lagi
+                    }}
+                  />
+                  {errorMsg && (
+                    <span className="text-red-500 text-xs text-left mt-1 font-medium pl-1">{errorMsg}</span>
+                  )}
+                </div>
+                
                 <select 
-                  className="px-4 py-2.5 border border-gray-300 rounded outline-none bg-white cursor-pointer"
+                  className="w-full md:w-auto px-4 py-2.5 border border-gray-300 rounded outline-none bg-white cursor-pointer"
                   value={selectedDomain}
                   onChange={(e) => setSelectedDomain(e.target.value)}
                 >
@@ -164,19 +179,18 @@ export default function Home() {
                     <option key={domain} value={domain}>@{domain}</option>
                   ))}
                 </select>
-                <div className="flex gap-2 justify-center mt-2 md:mt-0">
-                  <button onClick={saveCustomEmail} className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded font-medium transition">Gunakan</button>
-                  <button onClick={() => setMode('auto')} className="px-4 py-2.5 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 rounded font-medium transition">Batal</button>
+                
+                <div className="flex gap-2 justify-center w-full md:w-auto shrink-0">
+                  <button onClick={saveCustomEmail} className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded font-medium transition flex-grow md:flex-grow-0">Gunakan</button>
+                  <button onClick={() => { setMode('auto'); setErrorMsg(''); }} className="px-4 py-2.5 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 rounded font-medium transition">Batal</button>
                 </div>
               </div>
             )}
           </div>
         </div>
 
-        {/* TATA LETAK INBOX (KIRI & KANAN) */}
         <div className="flex flex-col md:flex-row gap-4 h-auto md:h-[600px]">
           
-          {/* KOLOM KIRI: DAFTAR PESAN */}
           <div className="w-full md:w-1/3 bg-white border border-gray-300 rounded shadow-sm flex flex-col h-[400px] md:h-full">
             <div className="bg-gray-50 border-b border-gray-300 px-4 py-3 flex justify-between items-center shrink-0">
               <h3 className="font-bold text-gray-700 text-sm">Kotak Masuk</h3>
@@ -209,7 +223,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* KOLOM KANAN: BACA PESAN */}
           <div className="w-full md:w-2/3 bg-white border border-gray-300 rounded shadow-sm flex flex-col h-[500px] md:h-full">
             {!selectedEmail ? (
               <div className="flex flex-col items-center justify-center h-full text-gray-400 p-6 text-center bg-gray-50/50">
@@ -219,11 +232,16 @@ export default function Home() {
               </div>
             ) : (
               <>
-                <div className="bg-white border-b border-gray-300 p-4 md:p-5 shrink-0">
-                  <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2 leading-tight">{selectedEmail.subject}</h3>
-                  <div className="text-sm text-gray-600">
-                    <p><strong className="text-gray-800">Dari:</strong> {selectedEmail.sender}</p>
-                    <p className="mt-0.5"><strong className="text-gray-800">Waktu:</strong> {new Date(selectedEmail.created_at).toLocaleString('id-ID')}</p>
+                <div className="bg-white border-b border-gray-300 p-4 md:p-5 shrink-0 flex items-start gap-3">
+                  <button onClick={() => setSelectedEmail(null)} className="md:hidden mt-0.5 text-gray-500 hover:text-blue-600 shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                  </button>
+                  <div>
+                    <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2 leading-tight">{selectedEmail.subject}</h3>
+                    <div className="text-sm text-gray-600">
+                      <p><strong className="text-gray-800">Dari:</strong> {selectedEmail.sender}</p>
+                      <p className="mt-0.5"><strong className="text-gray-800">Waktu:</strong> {new Date(selectedEmail.created_at).toLocaleString('id-ID')}</p>
+                    </div>
                   </div>
                 </div>
                 
