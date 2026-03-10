@@ -1,7 +1,50 @@
+/* Mengimpor Google Font 'Inter' yang super elegan dan modern */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-body {
-  background-color: #f9fafb; /* Sesuai dengan class bg-gray-50 di UI */
+@layer base {
+  html {
+    /* Menerapkan font Inter ke seluruh website */
+    font-family: 'Inter', sans-serif;
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    /* Warna latar belakang abu-abu kebiruan yang sangat lembut (tidak putih pucat) */
+    background-color: #f4f6f8; 
+    color: #334155;
+    /* Membuat font terlihat lebih tajam dan halus di layar resolusi tinggi */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* KUSTOMISASI SCROLLBAR (Biar nggak tebal dan jelek bawaan Windows) */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #94a3b8;
+  }
+
+  /* KUSTOMISASI WARNA SELECTION (Saat teks di-block/copy) */
+  ::selection {
+    background-color: #dbeafe; /* Biru muda Tailwind */
+    color: #1e3a8a; /* Biru tua Tailwind */
+  }
+}
+
+/* Memastikan iframe (isi email) tidak memiliki background transparan yang bikin teksnya tabrakan */
+iframe {
+  background-color: #ffffff;
 }
