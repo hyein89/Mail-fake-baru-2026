@@ -8,7 +8,7 @@ export default function Home() {
   const [customName, setCustomName] = useState('');
   
   // GANTI INI DENGAN DOMAIN CLOUDFLARE ANDA
-  const DOMAIN = 'tzuyuphxcy.eu.org'; 
+  const DOMAIN = 'pwtzuyuin.eu.org'; 
 
   const generateRandomEmail = () => {
     const randomString = Math.random().toString(36).substring(2, 10);
