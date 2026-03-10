@@ -99,7 +99,7 @@ export default function EmailViewer({ email }: { email: string }) {
           </>
         ) : (
           <div className="flex-grow flex items-center justify-center text-gray-400 bg-gray-50">
-            Pilih email di sebelah kiri untuk membaca isinya.
+          
           </div>
         )}
       </div>
