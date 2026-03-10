@@ -1,14 +1,16 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
-import PostalMime from 'postal-mime'; // Kita panggil library-nya di sini
+import PostalMime from 'postal-mime'; 
 
 export async function POST(request: Request) {
   try {
+    // 1. Cek Kunci Rahasia
     const authHeader = request.headers.get('authorization');
     if (authHeader !== `Bearer ${process.env.WEBHOOK_SECRET}`) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: 'Unauthorized (Kunci Salah)' }, { status: 401 });
     }
 
+    // 2. Ambil data mentah dari Cloudflare
     const body = await request.json();
     const { recipient, sender, rawText } = body;
 
@@ -16,11 +18,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Data tidak lengkap' }, { status: 400 });
     }
 
-    // Vercel membedah email mentah dari Cloudflare
+    // 3. Bedah email menggunakan postal-mime
     const parser = new PostalMime();
     const parsedEmail = await parser.parse(rawText);
 
-    // Simpan hasil bedahan ke Supabase
+    // 4. Simpan ke database Supabase
     const { error } = await supabase
       .from('emails')
       .insert([
