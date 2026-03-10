@@ -4,26 +4,19 @@ import PostalMime from 'postal-mime';
 
 export async function POST(request: Request) {
   try {
-    // 1. Cek Kunci Rahasia
     const authHeader = request.headers.get('authorization');
     if (authHeader !== `Bearer ${process.env.WEBHOOK_SECRET}`) {
-      return NextResponse.json({ error: 'Unauthorized (Kunci Salah)' }, { status: 401 });
+      return NextResponse.json({ error: 'Sandi Salah' }, { status: 401 });
     }
 
-    // 2. Ambil data mentah dari Cloudflare
     const body = await request.json();
     const { recipient, sender, rawText } = body;
 
-    if (!recipient || !sender || !rawText) {
-      return NextResponse.json({ error: 'Data tidak lengkap' }, { status: 400 });
-    }
-
-    // 3. Bedah email menggunakan postal-mime
     const parser = new PostalMime();
     const parsedEmail = await parser.parse(rawText);
 
-    // 4. Simpan ke database Supabase
-    const { error } = await supabase
+    // Mencoba menyimpan ke Supabase
+    const { data, error } = await supabase
       .from('emails')
       .insert([
         {
@@ -35,11 +28,16 @@ export async function POST(request: Request) {
         }
       ]);
 
-    if (error) throw error;
+    // Jika Supabase menolak, cetak alasan penolakannya!
+    if (error) {
+      console.error("ERROR DARI SUPABASE:", error);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
 
     return NextResponse.json({ success: true }, { status: 200 });
-  } catch (error) {
-    console.error('Webhook Error:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  } catch (error: any) {
+    // Jika Vercel yang gagal memproses, cetak alasannya!
+    console.error('ERROR DARI VERCEL:', error.message || error);
+    return NextResponse.json({ error: error.message || 'Server Error' }, { status: 500 });
   }
 }
