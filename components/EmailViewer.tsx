@@ -8,6 +8,7 @@ interface EmailData {
   sender: string;
   subject: string;
   body_text: string;
+  body_html: string; // KITA TAMBAHKAN INI
   created_at: string;
 }
 
@@ -35,12 +36,9 @@ export default function EmailViewer({ email }: { email: string }) {
 
   useEffect(() => {
     fetchEmails();
-
-    // Polling setiap 5 detik untuk mengecek email baru (sangat efektif untuk OTP)
     const interval = setInterval(() => {
       fetchEmails();
     }, 5000);
-
     return () => clearInterval(interval);
   }, [email]);
 
@@ -48,7 +46,7 @@ export default function EmailViewer({ email }: { email: string }) {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      {/* Daftar Email */}
+      {/* Kolom Kiri: Daftar Email */}
       <div className="md:col-span-1 bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm h-[600px] overflow-y-auto">
         <h3 className="bg-gray-100 px-4 py-3 font-semibold text-gray-700 border-b">Kotak Masuk ({emails.length})</h3>
         {emails.length === 0 ? (
@@ -72,21 +70,35 @@ export default function EmailViewer({ email }: { email: string }) {
         )}
       </div>
 
-      {/* Isi Email */}
-      <div className="md:col-span-2 bg-white border border-gray-200 rounded-xl shadow-sm h-[600px] flex flex-col">
+      {/* Kolom Kanan: Isi Email (SUDAH DIPERBARUI UNTUK HTML) */}
+      <div className="md:col-span-2 bg-white border border-gray-200 rounded-xl shadow-sm h-[600px] flex flex-col overflow-hidden">
         {selectedEmail ? (
           <>
-            <div className="p-6 border-b border-gray-100">
+            <div className="p-6 border-b border-gray-100 bg-white z-10">
               <h2 className="text-xl font-bold text-gray-800 mb-2">{selectedEmail.subject}</h2>
               <p className="text-sm text-gray-600">Dari: <span className="font-semibold">{selectedEmail.sender}</span></p>
             </div>
-            <div className="p-6 overflow-y-auto whitespace-pre-wrap font-mono text-sm text-gray-700 bg-gray-50 flex-grow">
-              {/* Ini akan menampilkan kode OTP atau link verifikasi dengan jelas */}
-              {selectedEmail.body_text}
+            
+            {/* Bagian ini yang menentukan tampilan emailnya */}
+            <div className="flex-grow relative bg-white">
+              {selectedEmail.body_html ? (
+                // Menampilkan tampilan asli (HTML) seperti di Gmail
+                <iframe 
+                  srcDoc={selectedEmail.body_html} 
+                  title="Isi Email"
+                  className="absolute inset-0 w-full h-full border-0"
+                  sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+                />
+              ) : (
+                // Menampilkan teks biasa jika pengirim tidak mengirim versi HTML
+                <div className="p-6 overflow-y-auto h-full whitespace-pre-wrap font-sans text-sm text-gray-800">
+                  {selectedEmail.body_text}
+                </div>
+              )}
             </div>
           </>
         ) : (
-          <div className="flex-grow flex items-center justify-center text-gray-400">
+          <div className="flex-grow flex items-center justify-center text-gray-400 bg-gray-50">
             Pilih email di sebelah kiri untuk membaca isinya.
           </div>
         )}
