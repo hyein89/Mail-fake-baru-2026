@@ -22,8 +22,6 @@ export default function Home() {
   const [copied, setCopied] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const [mode, setMode] = useState<'auto' | 'custom'>('auto');
-  
-  // State baru untuk menyimpan pesan error yang elegan
   const [errorMsg, setErrorMsg] = useState('');
 
   const generateStringNumberEmail = () => {
@@ -84,13 +82,10 @@ export default function Home() {
 
   const saveCustomEmail = () => {
     const name = customName.trim().toLowerCase().replace(/[^a-z0-9.]/g, '');
-    
-    // Validasi modern: Set state error tanpa memunculkan alert norak
     if (!name) {
       setErrorMsg('Nama email tidak boleh kosong');
       return;
     }
-    
     applyNewEmail(`${name}@${selectedDomain}`);
   };
 
@@ -100,7 +95,7 @@ export default function Home() {
     setEmails([]);
     setSelectedEmail(null);
     setCustomName('');
-    setErrorMsg(''); // Bersihkan pesan error jika ada
+    setErrorMsg('');
     setMode('auto');
   };
 
@@ -126,8 +121,12 @@ export default function Home() {
           <div className="p-5 md:p-8 text-center">
             {mode === 'auto' ? (
               <div className="max-w-2xl mx-auto">
-                <div className="bg-[#f8f9fa] border border-gray-200 p-4 mb-5 rounded">
-                  <p className="text-xl md:text-3xl font-mono font-bold text-gray-800 break-all leading-tight">
+                {/* DIPERBAIKI: Overflow hidden dan truncate agar titik-titik di ujung */}
+                <div className="bg-[#f8f9fa] border border-gray-200 p-4 mb-5 rounded min-w-0 overflow-hidden">
+                  <p 
+                    className="text-xl md:text-3xl font-mono font-bold text-gray-800 truncate leading-tight" 
+                    title={activeEmail}
+                  >
                     {activeEmail || 'Memuat...'}
                   </p>
                 </div>
@@ -153,23 +152,21 @@ export default function Home() {
               </div>
             ) : (
               <div className="max-w-2xl mx-auto flex flex-col md:flex-row gap-2 items-start">
-                {/* Kolom Input & Pesan Error */}
-                <div className="flex flex-col w-full">
+                <div className="flex flex-col w-full min-w-0">
                   <input 
                     type="text" 
-                    className={`w-full px-4 py-2.5 border ${errorMsg ? 'border-red-500 bg-red-50' : 'border-gray-300'} rounded outline-none focus:border-blue-500 font-mono text-center md:text-left transition-colors`} 
+                    className={`w-full px-4 py-2.5 border ${errorMsg ? 'border-red-500 bg-red-50' : 'border-gray-300'} rounded outline-none focus:border-blue-500 font-mono text-center md:text-left transition-colors truncate`} 
                     placeholder="nama.bebas" 
                     value={customName}
                     onChange={(e) => {
                       setCustomName(e.target.value);
-                      if (errorMsg) setErrorMsg(''); // Hapus tulisan error saat user mulai ngetik lagi
+                      if (errorMsg) setErrorMsg('');
                     }}
                   />
                   {errorMsg && (
                     <span className="text-red-500 text-xs text-left mt-1 font-medium pl-1">{errorMsg}</span>
                   )}
                 </div>
-                
                 <select 
                   className="w-full md:w-auto px-4 py-2.5 border border-gray-300 rounded outline-none bg-white cursor-pointer"
                   value={selectedDomain}
@@ -179,7 +176,6 @@ export default function Home() {
                     <option key={domain} value={domain}>@{domain}</option>
                   ))}
                 </select>
-                
                 <div className="flex gap-2 justify-center w-full md:w-auto shrink-0">
                   <button onClick={saveCustomEmail} className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded font-medium transition flex-grow md:flex-grow-0">Gunakan</button>
                   <button onClick={() => { setMode('auto'); setErrorMsg(''); }} className="px-4 py-2.5 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 rounded font-medium transition">Batal</button>
@@ -197,7 +193,7 @@ export default function Home() {
               <span className="bg-gray-200 text-gray-700 py-0.5 px-2 rounded font-bold text-xs">{emails.length}</span>
             </div>
             
-            <div className="flex-grow overflow-y-auto">
+            <div className="flex-grow overflow-y-auto min-w-0">
               {emails.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full text-gray-400 p-4 text-center">
                   <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="mb-2 opacity-50"><path d="M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h8"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/><path d="M19 16v6"/><path d="M16 19h6"/></svg>
@@ -209,13 +205,14 @@ export default function Home() {
                     <div 
                       key={item.id} 
                       onClick={() => setSelectedEmail(item)}
-                      className={`p-4 cursor-pointer transition border-l-4 ${selectedEmail?.id === item.id ? 'bg-[#f4f8fa] border-blue-500' : 'border-transparent hover:bg-gray-50'}`}
+                      className={`p-4 cursor-pointer transition border-l-4 overflow-hidden ${selectedEmail?.id === item.id ? 'bg-[#f4f8fa] border-blue-500' : 'border-transparent hover:bg-gray-50'}`}
                     >
-                      <div className="flex justify-between items-start mb-1">
-                        <strong className="text-gray-900 text-sm truncate pr-2">{item.sender}</strong>
+                      {/* DIPERBAIKI: Flex container dipaksa punya min-w-0 agar truncate jalan */}
+                      <div className="flex justify-between items-start mb-1 min-w-0 gap-2">
+                        <strong className="text-gray-900 text-sm truncate flex-1" title={item.sender}>{item.sender}</strong>
                         <span className="text-xs text-gray-500 shrink-0 mt-0.5">{new Date(item.created_at).toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'})}</span>
                       </div>
-                      <p className="text-sm text-gray-600 truncate">{item.subject || '(Tanpa Subjek)'}</p>
+                      <p className="text-sm text-gray-600 truncate" title={item.subject || '(Tanpa Subjek)'}>{item.subject || '(Tanpa Subjek)'}</p>
                     </div>
                   ))}
                 </div>
@@ -223,7 +220,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="w-full md:w-2/3 bg-white border border-gray-300 rounded shadow-sm flex flex-col h-[500px] md:h-full">
+          <div className="w-full md:w-2/3 bg-white border border-gray-300 rounded shadow-sm flex flex-col h-[500px] md:h-full overflow-hidden">
             {!selectedEmail ? (
               <div className="flex flex-col items-center justify-center h-full text-gray-400 p-6 text-center bg-gray-50/50">
                 <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="mb-3 opacity-30"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -232,15 +229,17 @@ export default function Home() {
               </div>
             ) : (
               <>
-                <div className="bg-white border-b border-gray-300 p-4 md:p-5 shrink-0 flex items-start gap-3">
+                {/* DIPERBAIKI: Kunci lebar header dengan w-full dan min-w-0 */}
+                <div className="bg-white border-b border-gray-300 p-4 md:p-5 shrink-0 flex items-start gap-3 w-full min-w-0">
                   <button onClick={() => setSelectedEmail(null)} className="md:hidden mt-0.5 text-gray-500 hover:text-blue-600 shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                   </button>
-                  <div>
-                    <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2 leading-tight">{selectedEmail.subject}</h3>
-                    <div className="text-sm text-gray-600">
-                      <p><strong className="text-gray-800">Dari:</strong> {selectedEmail.sender}</p>
-                      <p className="mt-0.5"><strong className="text-gray-800">Waktu:</strong> {new Date(selectedEmail.created_at).toLocaleString('id-ID')}</p>
+                  {/* flex-1 dan min-w-0 penting banget biar teks di dalamnya nurut pas di-truncate */}
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2 leading-tight truncate" title={selectedEmail.subject}>{selectedEmail.subject}</h3>
+                    <div className="text-sm text-gray-600 min-w-0">
+                      <p className="truncate" title={selectedEmail.sender}><strong className="text-gray-800">Dari:</strong> {selectedEmail.sender}</p>
+                      <p className="mt-0.5 truncate"><strong className="text-gray-800">Waktu:</strong> {new Date(selectedEmail.created_at).toLocaleString('id-ID')}</p>
                     </div>
                   </div>
                 </div>
