@@ -17,31 +17,40 @@ export default function Home() {
   const [activeEmail, setActiveEmail] = useState('');
   const [emails, setEmails] = useState<EmailData[]>([]);
   const [selectedEmail, setSelectedEmail] = useState<EmailData | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
   const [customName, setCustomName] = useState('');
   const [selectedDomain, setSelectedDomain] = useState(DEFAULT_DOMAIN);
   const [copied, setCopied] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
+  const [mode, setMode] = useState<'auto' | 'custom'>('auto');
 
-  // Fungsi membuat email acak
-  const generateRandomEmail = () => {
-    const randomStr = Math.random().toString(36).substring(2, 10);
-    return `${randomStr}@${selectedDomain}`;
+  // Database Nama-nama orang untuk generator acak
+  const firstNames = ['agus', 'budi', 'siti', 'ayu', 'dimas', 'putri', 'kevin', 'sarah', 'alex', 'dina', 'rio', 'maya'];
+  const lastNames = ['pratama', 'wijaya', 'saputra', 'kusuma', 'lestari', 'hidayat', 'setiawan', 'nugroho'];
+
+  // Fungsi membuat email acak (Nama Manusia + Angka)
+  const generateHumanEmail = () => {
+    const fn = firstNames[Math.floor(Math.random() * firstNames.length)];
+    const ln = lastNames[Math.floor(Math.random() * lastNames.length)];
+    const num = Math.floor(Math.random() * 900) + 100; // Angka 100-999
+    return `${fn}.${ln}${num}@${selectedDomain}`;
   };
 
-  // Saat web pertama kali dibuka, langsung buatkan email!
+  // Setup awal
   useEffect(() => {
     const savedEmail = localStorage.getItem('temp_email');
     if (savedEmail) {
       setActiveEmail(savedEmail);
+      // Sinkronkan domain dropdown dengan email yang tersimpan
+      const domainPart = savedEmail.split('@')[1];
+      if (MAIL_DOMAINS.includes(domainPart)) setSelectedDomain(domainPart);
     } else {
-      const newEmail = generateRandomEmail();
+      const newEmail = generateHumanEmail();
       setActiveEmail(newEmail);
       localStorage.setItem('temp_email', newEmail);
     }
   }, []);
 
-  // Tarik pesan dari database
+  // Tarik pesan dari Supabase
   const fetchEmails = async (emailToFetch: string) => {
     if (!emailToFetch) return;
     setIsSyncing(true);
@@ -60,7 +69,7 @@ export default function Home() {
     }
   };
 
-  // Auto-refresh setiap 5 detik
+  // Auto-refresh 5 detik
   useEffect(() => {
     if (activeEmail) {
       fetchEmails(activeEmail);
@@ -69,81 +78,83 @@ export default function Home() {
     }
   }, [activeEmail]);
 
-  // Fungsi copy ke clipboard
   const handleCopy = () => {
     navigator.clipboard.writeText(activeEmail);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
-  // Fungsi ganti email custom
+  const changeToNewHumanEmail = () => {
+    const newEmail = generateHumanEmail();
+    applyNewEmail(newEmail);
+  };
+
   const saveCustomEmail = () => {
-    const name = customName.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
-    const newEmail = name ? `${name}@${selectedDomain}` : generateRandomEmail();
+    const name = customName.trim().toLowerCase().replace(/[^a-z0-9.]/g, '');
+    if (!name) return alert('Nama tidak boleh kosong');
+    applyNewEmail(`${name}@${selectedDomain}`);
+  };
+
+  const applyNewEmail = (newEmail: string) => {
     setActiveEmail(newEmail);
     localStorage.setItem('temp_email', newEmail);
     setEmails([]);
     setSelectedEmail(null);
-    setIsEditing(false);
+    setCustomName('');
+    setMode('auto');
   };
 
   return (
-    <main className="min-h-screen bg-[#f8f9fa] text-gray-800 font-sans selection:bg-blue-100">
-      
-      {/* HEADER NAVBAR */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
+    <main className="min-h-screen bg-gray-50 text-gray-800 font-sans">
+      {/* Navbar Simple */}
+      <header className="bg-white border-b border-gray-200">
+        <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">@</div>
-            <h1 className="text-xl font-bold tracking-tight text-gray-900">TempMail.</h1>
-          </div>
-          <div className="text-sm font-medium text-gray-500 hidden md:block">
-            Layanan Email Sementara & Anti-Spam
+            <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center text-white font-bold">@</div>
+            <h1 className="text-xl font-bold text-gray-800">TempMail</h1>
           </div>
         </div>
       </header>
 
-      <div className="max-w-6xl mx-auto px-4 md:px-6 py-8">
+      <div className="max-w-4xl mx-auto px-4 py-8">
         
-        {/* HERO SECTION: TEMPAT EMAIL AKTIF */}
-        <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 md:p-8 mb-8">
-          <p className="text-center text-gray-500 text-sm font-medium mb-4 uppercase tracking-wider">Alamat Email Anda</p>
+        {/* KOTAK EMAIL UTAMA */}
+        <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 mb-8">
+          <p className="text-center text-xs font-semibold text-gray-400 tracking-widest uppercase mb-4">Alamat Email Anda</p>
           
-          {!isEditing ? (
-            <div className="max-w-3xl mx-auto flex flex-col md:flex-row items-center gap-3">
-              <div className="flex-grow w-full bg-gray-50 border border-gray-200 rounded-xl px-6 py-4 flex items-center justify-between group">
-                <span className="text-xl md:text-2xl font-mono text-gray-900 truncate pr-4">{activeEmail || 'Memuat...'}</span>
-                <button onClick={handleCopy} className="text-gray-400 hover:text-blue-600 transition-colors shrink-0">
-                  {copied ? (
-                    <span className="text-green-500 font-medium text-sm">Tersalin!</span>
-                  ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-                  )}
+          {mode === 'auto' ? (
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center justify-between border border-gray-200 bg-gray-50 rounded-lg p-4">
+                <span className="text-lg md:text-2xl font-mono text-gray-900 truncate">{activeEmail || 'Memuat...'}</span>
+                <button onClick={handleCopy} className="ml-4 flex items-center justify-center gap-2 bg-white border border-gray-200 hover:bg-gray-100 text-gray-700 px-4 py-2 rounded-md font-medium transition">
+                  {copied ? <span className="text-green-600">Tersalin!</span> : <span>Salin</span>}
                 </button>
               </div>
-              <div className="flex gap-2 w-full md:w-auto shrink-0">
-                <button onClick={() => setIsEditing(true)} className="flex-1 md:flex-none bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 px-5 py-4 rounded-xl font-medium transition-colors flex items-center justify-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-                  <span className="md:hidden">Ubah</span>
-                </button>
-                <button onClick={() => fetchEmails(activeEmail)} className="flex-1 md:flex-none bg-blue-600 text-white hover:bg-blue-700 px-6 py-4 rounded-xl font-medium transition-colors flex items-center justify-center gap-2 shadow-sm">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={isSyncing ? "animate-spin" : ""}><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+              
+              <div className="flex flex-wrap gap-2 justify-center">
+                <button onClick={() => fetchEmails(activeEmail)} className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-md text-sm font-medium transition">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={isSyncing ? "animate-spin" : ""}><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
                   Refresh
+                </button>
+                <button onClick={changeToNewHumanEmail} className="flex-1 md:flex-none bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-5 py-2.5 rounded-md text-sm font-medium transition">
+                  Acak (Manusia)
+                </button>
+                <button onClick={() => setMode('custom')} className="flex-1 md:flex-none bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-5 py-2.5 rounded-md text-sm font-medium transition">
+                  Buat Custom
                 </button>
               </div>
             </div>
           ) : (
-            /* MODE EDIT CUSTOM EMAIL */
-            <div className="max-w-3xl mx-auto bg-gray-50 border border-gray-200 rounded-xl p-2 flex flex-col md:flex-row gap-2">
+            <div className="flex flex-col md:flex-row gap-3">
               <input 
                 type="text" 
-                placeholder="nama.bebas" 
-                className="flex-grow px-4 py-3 bg-white border border-gray-200 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-gray-800"
+                placeholder="contoh: budi.123" 
+                className="flex-grow px-4 py-3 border border-gray-200 rounded-md outline-none focus:border-blue-500 font-mono"
                 value={customName}
                 onChange={(e) => setCustomName(e.target.value)}
               />
               <select 
-                className="px-4 py-3 bg-white border border-gray-200 rounded-lg outline-none cursor-pointer text-gray-800"
+                className="px-4 py-3 border border-gray-200 rounded-md outline-none bg-white cursor-pointer"
                 value={selectedDomain}
                 onChange={(e) => setSelectedDomain(e.target.value)}
               >
@@ -151,92 +162,95 @@ export default function Home() {
                   <option key={domain} value={domain}>@{domain}</option>
                 ))}
               </select>
-              <button onClick={saveCustomEmail} className="bg-gray-900 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors">
-                Simpan
-              </button>
+              <div className="flex gap-2">
+                <button onClick={saveCustomEmail} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md font-medium transition flex-grow">
+                  Gunakan
+                </button>
+                <button onClick={() => setMode('auto')} className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-4 py-3 rounded-md font-medium transition">
+                  Batal
+                </button>
+              </div>
             </div>
           )}
         </div>
 
-        {/* INBOX SECTION: SPLIT LAYOUT */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-[700px]">
+        {/* KOTAK PESAN MASUK */}
+        <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden min-h-[500px] flex flex-col">
           
-          {/* KIRI: DAFTAR PESAN */}
-          <div className="lg:col-span-4 bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden flex flex-col h-full">
-            <div className="bg-gray-50/80 px-5 py-4 border-b border-gray-200 flex justify-between items-center shrink-0">
-              <h3 className="font-semibold text-gray-800 flex items-center gap-2">
-                Kotak Masuk
-                <span className="bg-blue-100 text-blue-700 py-0.5 px-2.5 rounded-full text-xs font-bold">{emails.length}</span>
-              </h3>
-              {isSyncing && <span className="flex h-2 w-2 relative"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span><span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span></span>}
-            </div>
-            
-            <div className="flex-grow overflow-y-auto divide-y divide-gray-100">
-              {emails.length === 0 ? (
-                <div className="h-full flex flex-col items-center justify-center text-gray-400 p-8 text-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="mb-4 opacity-50"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                  <p className="text-sm">Menunggu pesan masuk...</p>
-                  <p className="text-xs mt-1 opacity-70">Otomatis diperbarui setiap 5 detik</p>
-                </div>
-              ) : (
-                emails.map((item) => (
-                  <div 
-                    key={item.id} 
-                    onClick={() => setSelectedEmail(item)}
-                    className={`p-5 cursor-pointer transition-all border-l-4 ${selectedEmail?.id === item.id ? 'bg-blue-50/50 border-blue-500' : 'border-transparent hover:bg-gray-50'}`}
-                  >
-                    <div className="flex justify-between items-start mb-1 gap-2">
-                      <p className="font-semibold text-sm text-gray-900 truncate">{item.sender}</p>
-                      <span className="text-[11px] text-gray-400 whitespace-nowrap pt-0.5 font-mono">{new Date(item.created_at).toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'})}</span>
-                    </div>
-                    <p className="text-sm text-gray-600 truncate">{item.subject}</p>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-
-          {/* KANAN: BACA PESAN */}
-          <div className="lg:col-span-8 bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden flex flex-col h-full">
-            {selectedEmail ? (
-              <>
-                {/* Header Pesan Terpilih */}
-                <div className="p-6 md:p-8 border-b border-gray-200 bg-white shrink-0">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4 leading-snug">{selectedEmail.subject}</h2>
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 font-bold uppercase">
-                      {selectedEmail.sender.charAt(0)}
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-gray-900">{selectedEmail.sender}</p>
-                      <p className="text-xs text-gray-500">ke <span className="font-mono">{activeEmail}</span></p>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Area Konten Iframe / Teks */}
-                <div className="flex-grow relative bg-white">
-                  {selectedEmail.body_html ? (
-                    <iframe 
-                      srcDoc={selectedEmail.body_html.replace(/"/g, '&quot;')} 
-                      className="absolute inset-0 w-full h-full border-0"
-                      sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"
-                    />
-                  ) : (
-                    <div className="absolute inset-0 overflow-y-auto p-6 md:p-8 text-gray-800 font-sans text-sm whitespace-pre-wrap leading-relaxed">
-                      {selectedEmail.body_text}
-                    </div>
-                  )}
-                </div>
-              </>
-            ) : (
-              <div className="h-full flex flex-col items-center justify-center text-gray-400 bg-gray-50/50">
-                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="mb-4 opacity-20"><path d="M21.2 8.4c.5.3.8.8.8 1.4v10.2a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9.8c0-.6.3-1.1.8-1.4l8-4.8c.4-.2.8-.2 1.2 0l8 4.8Z"/><path d="m22 10-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 10"/></svg>
-                <p className="font-medium text-gray-500">Tidak ada pesan yang dipilih</p>
-                <p className="text-sm mt-1">Pilih email dari daftar di sebelah kiri untuk membaca isinya.</p>
+          {!selectedEmail ? (
+            /* TAMPILAN DAFTAR INBOX */
+            <>
+              <div className="bg-gray-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                <h3 className="font-semibold text-gray-800 flex items-center gap-2">
+                  Kotak Masuk
+                  <span className="bg-gray-200 text-gray-700 py-0.5 px-2.5 rounded-full text-xs font-bold">{emails.length}</span>
+                </h3>
               </div>
-            )}
-          </div>
+              
+              <div className="flex-grow flex flex-col">
+                {emails.length === 0 ? (
+                  <div className="m-auto text-center p-8 text-gray-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-4 opacity-50"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                    <p>Menunggu pesan masuk...</p>
+                  </div>
+                ) : (
+                  <div className="divide-y divide-gray-100">
+                    {emails.map((item) => (
+                      <div 
+                        key={item.id} 
+                        onClick={() => setSelectedEmail(item)}
+                        className="p-4 md:p-6 cursor-pointer hover:bg-gray-50 transition flex flex-col md:flex-row md:items-center justify-between gap-2"
+                      >
+                        <div className="flex-grow overflow-hidden">
+                          <p className="font-semibold text-gray-900 truncate text-sm md:text-base">{item.sender}</p>
+                          <p className="text-gray-500 truncate text-sm mt-0.5">{item.subject || '(Tanpa Subjek)'}</p>
+                        </div>
+                        <span className="text-xs text-gray-400 font-mono shrink-0">
+                          {new Date(item.created_at).toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'})}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </>
+          ) : (
+            /* TAMPILAN BACA PESAN (FULL WIDTH) */
+            <div className="flex flex-col h-full">
+              <div className="bg-gray-50 px-4 py-3 border-b border-gray-200 flex items-center">
+                <button 
+                  onClick={() => setSelectedEmail(null)}
+                  className="flex items-center gap-2 text-sm text-gray-600 hover:text-blue-600 font-medium transition bg-white border border-gray-200 px-3 py-1.5 rounded"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                  Kembali
+                </button>
+              </div>
+              
+              <div className="p-6 border-b border-gray-100">
+                <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 leading-snug">{selectedEmail.subject}</h2>
+                <div className="flex flex-col">
+                  <span className="text-sm font-semibold text-gray-800">Dari: {selectedEmail.sender}</span>
+                  <span className="text-xs text-gray-500 mt-1">Dikirim: {new Date(selectedEmail.created_at).toLocaleString('id-ID')}</span>
+                </div>
+              </div>
+              
+              <div className="flex-grow relative bg-white min-h-[500px]">
+                {selectedEmail.body_html ? (
+                  // Iframe tanpa replace quotes agar HTML Facebook tampil sempurna
+                  <iframe 
+                    srcDoc={selectedEmail.body_html} 
+                    className="absolute inset-0 w-full h-full border-0"
+                    sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+                  />
+                ) : (
+                  <div className="absolute inset-0 overflow-y-auto p-6 text-gray-800 font-sans text-sm whitespace-pre-wrap leading-relaxed">
+                    {selectedEmail.body_text}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
         </div>
       </div>
