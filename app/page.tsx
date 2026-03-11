@@ -100,16 +100,12 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-[#f4f6f8] text-gray-800 font-sans">
-      
-      <nav className="bg-white border-b border-gray-300 shadow-sm sticky top-0 z-50">
-        <div className="max-w-5xl mx-auto px-4 h-14 flex items-center">
-          <div className="flex items-center gap-2 text-blue-700">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-            <h1 className="text-lg font-bold tracking-tight">TempMail</h1>
-          </div>
-        </div>
-      </nav>
+    <main className="w-full">
+      <div className="max-w-5xl mx-auto px-4 py-6">
+        
+        {/* PANEL EMAIL AKTIF */}
+        <div className="bg-white border border-gray-300 rounded shadow-sm mb-6">
+           {/* ... (BIARKAN ISI KE BAWAHNYA SAMA SEPERTI SEBELUMNYA) ... */}
 
       <div className="max-w-5xl mx-auto px-4 py-6">
         
