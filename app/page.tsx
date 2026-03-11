@@ -248,7 +248,7 @@ export default function Home() {
             )}
           </div>
 
-       
+       </div>
           
         {/* ================= MULAI AREA ARTIKEL SEO ================= */}
         <div className="bg-white border border-gray-300 rounded shadow-sm mt-12 p-6 md:p-10 mb-8">
