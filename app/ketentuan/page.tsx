@@ -25,7 +25,7 @@ export default function KetentuanPage() {
 
         {/* Pasal 1 */}
         <section>
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 tracking-tight">1. Deskripsi dan Sifat Layanan</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 tracking-tight">Deskripsi dan Sifat Layanan</h2>
           <p className="text-base md:text-lg leading-relaxed text-justify">
             {siteConfig.name} menyediakan layanan alamat email sementara dan sekali pakai (<em>disposable email</em>) secara gratis yang ditujukan secara eksklusif untuk melindungi privasi Anda dari pesan <em>spam</em>. Sistem kami dirancang murni sebagai wadah penerima pesan (<em>inbound only</em>). Kami <strong>tidak menyediakan fasilitas untuk mengirim pesan keluar</strong>, membalas email, atau meneruskan pesan ke alamat lain. Layanan ini bersifat sementara (<em>volatile</em>), yang berarti semua pesan masuk akan dihapus secara otomatis dan permanen oleh sistem dari waktu ke waktu.
           </p>
@@ -33,7 +33,7 @@ export default function KetentuanPage() {
 
         {/* Pasal 2 */}
         <section>
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 tracking-tight">2. Kebijakan Penggunaan yang Dapat Diterima (AUP)</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 tracking-tight">Kebijakan Penggunaan yang Dapat Diterima (AUP)</h2>
           <p className="text-base md:text-lg leading-relaxed text-justify mb-4">
             Anda setuju untuk menggunakan layanan ini hanya untuk tujuan yang sah, etis, dan sesuai dengan hukum yang berlaku secara internasional maupun di yurisdiksi Anda. Anda secara tegas <strong>dilarang</strong> menggunakan infrastruktur {siteConfig.name} untuk:
           </p>
@@ -47,7 +47,7 @@ export default function KetentuanPage() {
 
         {/* Pasal 3 */}
         <section>
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 tracking-tight">3. Penafian Tanggung Jawab (Disclaimer of Warranties)</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 tracking-tight">Penafian Tanggung Jawab (Disclaimer of Warranties)</h2>
           <p className="text-base md:text-lg leading-relaxed text-justify mb-4">
             Layanan kami disediakan secara "Sebagaimana Adanya" (<em>As-Is</em>) dan "Sebagaimana Tersedia" (<em>As-Available</em>). Kami <strong>menolak segala bentuk jaminan</strong>, baik tersurat maupun tersirat, termasuk namun tidak terbatas pada jaminan kelayakan untuk diperdagangkan atau kesesuaian untuk tujuan tertentu. Kami tidak menjamin bahwa:
           </p>
@@ -60,7 +60,7 @@ export default function KetentuanPage() {
 
         {/* Pasal 4 */}
         <section>
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 tracking-tight">4. Batasan Kewajiban (Limitation of Liability)</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 tracking-tight">Batasan Kewajiban (Limitation of Liability)</h2>
           <p className="text-base md:text-lg leading-relaxed text-justify">
             Dalam keadaan atau teori hukum apa pun, tim pengembang, pemilik domain, afiliasi, atau pemasok {siteConfig.name} tidak akan bertanggung jawab atas kerusakan langsung, tidak langsung, insidental, atau kerugian konsekuensial (termasuk hilangnya data, akun pihak ketiga yang ditangguhkan, kehilangan keuntungan finansial, atau kegagalan transaksi) yang timbul akibat penggunaan atau ketidakmampuan Anda dalam menggunakan layanan ini. Penggunaan alamat email dari situs kami untuk mendaftar akun penting adalah risiko yang Anda tanggung sendiri sepenuhnya.
           </p>
@@ -68,7 +68,7 @@ export default function KetentuanPage() {
 
         {/* Pasal 5 */}
         <section>
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 tracking-tight">5. Penghentian dan Pemblokiran Akses</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 tracking-tight">Penghentian dan Pemblokiran Akses</h2>
           <p className="text-base md:text-lg leading-relaxed text-justify">
             Kami berhak, atas kebijakan kami sendiri secara sepihak dan tanpa pemberitahuan sebelumnya, untuk menghentikan, membatasi, atau memblokir akses alamat IP Anda ke layanan kami apabila kami mendeteksi adanya aktivitas yang mencurigakan, pelanggaran terhadap ketentuan ini, atau tindakan penyalahgunaan (<em>abuse</em>) yang membebani infrastruktur jaringan kami secara tidak wajar. Kami juga berhak untuk menghapus, menambah, atau mengganti domain email sementara yang tersedia kapan saja tanpa pemberitahuan.
           </p>
