@@ -1,8 +1,10 @@
 import './globals.css';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 
 export const metadata = {
-  title: 'Layanan Temp Mail',
-  description: 'Terima email dan OTP dengan cepat',
+  title: 'TempMail Service',
+  description: 'Layanan Email Sementara & Anti-Spam super cepat.',
 };
 
 export default function RootLayout({
@@ -12,7 +14,17 @@ export default function RootLayout({
 }) {
   return (
     <html lang="id">
-      <body>{children}</body>
+      {/* flex-col dan min-h-screen memastikan Footer selalu didorong ke paling bawah layar */}
+      <body className="flex flex-col min-h-screen bg-[#f4f6f8] text-gray-800 font-sans">
+        <Navbar />
+        
+        {/* Konten halaman (seperti kotak email) akan masuk ke sini */}
+        <div className="flex-grow">
+          {children}
+        </div>
+        
+        <Footer />
+      </body>
     </html>
   );
 }
