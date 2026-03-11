@@ -1,5 +1,5 @@
-/* Mengimpor Google Font 'Inter' yang super elegan dan modern */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+/* Mengimpor Google Font 'Roboto Mono' (untuk judul) dan 'Roboto' (untuk teks) */
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@500;700&family=Roboto:wght@400;500;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -7,21 +7,25 @@
 
 @layer base {
   html {
-    /* Menerapkan font Inter ke seluruh website */
-    font-family: 'Inter', sans-serif;
+    /* Menerapkan font Roboto ke seluruh teks paragraf agar rapi dibaca */
+    font-family: 'Roboto', sans-serif;
     scroll-behavior: smooth;
   }
   
+  /* Menerapkan font gaya "Mesin Tik" KHUSUS untuk semua Judul (seperti di screenshot Anda) */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Roboto Mono', monospace;
+    letter-spacing: -0.5px; /* Sedikit merapatkan huruf agar makin mirip */
+  }
+  
   body {
-    /* Warna latar belakang abu-abu kebiruan yang sangat lembut (tidak putih pucat) */
     background-color: #f4f6f8; 
     color: #334155;
-    /* Membuat font terlihat lebih tajam dan halus di layar resolusi tinggi */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* KUSTOMISASI SCROLLBAR (Biar nggak tebal dan jelek bawaan Windows) */
+  /* KUSTOMISASI SCROLLBAR */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -37,14 +41,13 @@
     background-color: #94a3b8;
   }
 
-  /* KUSTOMISASI WARNA SELECTION (Saat teks di-block/copy) */
+  /* KUSTOMISASI WARNA SELECTION */
   ::selection {
-    background-color: #dbeafe; /* Biru muda Tailwind */
-    color: #1e3a8a; /* Biru tua Tailwind */
+    background-color: #dbeafe;
+    color: #1e3a8a;
   }
 }
 
-/* Memastikan iframe (isi email) tidak memiliki background transparan yang bikin teksnya tabrakan */
 iframe {
   background-color: #ffffff;
 }
