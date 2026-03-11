@@ -105,11 +105,6 @@ export default function Home() {
         
         {/* PANEL EMAIL AKTIF */}
         <div className="bg-white border border-gray-300 rounded shadow-sm mb-6">
-           {/* ... (BIARKAN ISI KE BAWAHNYA SAMA SEPERTI SEBELUMNYA) ... */}
-
-      <div className="max-w-5xl mx-auto px-4 py-6">
-        
-        <div className="bg-white border border-gray-300 rounded shadow-sm mb-6">
           <div className="bg-gray-50 border-b border-gray-300 px-4 py-3">
             <h2 className="text-xs font-bold text-gray-500 uppercase tracking-wider">Alamat Email Anda</h2>
           </div>
@@ -117,7 +112,6 @@ export default function Home() {
           <div className="p-5 md:p-8 text-center">
             {mode === 'auto' ? (
               <div className="max-w-2xl mx-auto">
-                {/* DIPERBAIKI: Overflow hidden dan truncate agar titik-titik di ujung */}
                 <div className="bg-[#f8f9fa] border border-gray-200 p-4 mb-5 rounded min-w-0 overflow-hidden">
                   <p 
                     className="text-xl md:text-3xl font-mono font-bold text-gray-800 truncate leading-tight" 
@@ -203,7 +197,6 @@ export default function Home() {
                       onClick={() => setSelectedEmail(item)}
                       className={`p-4 cursor-pointer transition border-l-4 overflow-hidden ${selectedEmail?.id === item.id ? 'bg-[#f4f8fa] border-blue-500' : 'border-transparent hover:bg-gray-50'}`}
                     >
-                      {/* DIPERBAIKI: Flex container dipaksa punya min-w-0 agar truncate jalan */}
                       <div className="flex justify-between items-start mb-1 min-w-0 gap-2">
                         <strong className="text-gray-900 text-sm truncate flex-1" title={item.sender}>{item.sender}</strong>
                         <span className="text-xs text-gray-500 shrink-0 mt-0.5">{new Date(item.created_at).toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'})}</span>
@@ -225,12 +218,10 @@ export default function Home() {
               </div>
             ) : (
               <>
-                {/* DIPERBAIKI: Kunci lebar header dengan w-full dan min-w-0 */}
                 <div className="bg-white border-b border-gray-300 p-4 md:p-5 shrink-0 flex items-start gap-3 w-full min-w-0">
                   <button onClick={() => setSelectedEmail(null)} className="md:hidden mt-0.5 text-gray-500 hover:text-blue-600 shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                   </button>
-                  {/* flex-1 dan min-w-0 penting banget biar teks di dalamnya nurut pas di-truncate */}
                   <div className="flex-1 min-w-0">
                     <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2 leading-tight truncate" title={selectedEmail.subject}>{selectedEmail.subject}</h3>
                     <div className="text-sm text-gray-600 min-w-0">
