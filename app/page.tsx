@@ -250,70 +250,62 @@ export default function Home() {
 
        </div>
           
-        {/* ================= MULAI AREA ARTIKEL SEO ================= */}
-        <div className="bg-white border border-gray-300 rounded shadow-sm mt-12 p-6 md:p-10 mb-8">
-          <div className="max-w-4xl mx-auto space-y-8">
+        {/* ================= MULAI AREA ARTIKEL SEO (VERSI MURNI TEKS) ================= */}
+        <article className="mt-24 mb-16 max-w-4xl mx-auto px-2 md:px-0">
+          
+          {/* Garis pemisah halus dari area aplikasi ke area bacaan */}
+          <div className="w-full h-px bg-gray-300 mb-16"></div>
+
+          <div className="space-y-12 text-gray-700 font-sans">
             
-            <div className="text-center mb-10">
-              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">Mengenal Layanan {siteConfig.name}</h2>
-              <div className="w-16 h-1 bg-blue-600 mx-auto rounded-full"></div>
-            </div>
-
             <section>
-              <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-blue-600"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 tracking-tight">
                 Apa itu {siteConfig.name}?
-              </h3>
-              <p className="text-gray-600 leading-relaxed text-sm md:text-base text-justify">
-                <strong>{siteConfig.name}</strong> adalah layanan email sementara (disposable email) gratis yang memungkinkan Anda menerima email masuk pada alamat sementara yang aman. Layanan ini sering juga dikenal sebagai temp mail, 10 minute mail, atau trash mail. Berbeda dengan email pribadi Anda, email sementara ini dirancang untuk tujuan jangka pendek agar privasi asli Anda tetap terjaga di dunia maya.
+              </h2>
+              <p className="text-base md:text-lg leading-relaxed text-justify">
+                <strong>{siteConfig.name}</strong> adalah layanan email sementara terkemuka yang dirancang untuk melindungi privasi Anda secara online. Layanan ini, yang sering dikenal dengan istilah <em>10 minute mail</em>, <em>temp mail</em>, atau email sekali pakai, memberikan Anda alamat email anonim yang dapat digunakan untuk menerima pesan seketika. Berbeda dengan penyedia layanan email tradisional, sistem kami tidak meminta informasi data diri, kata sandi, maupun registrasi apa pun untuk mulai menggunakan layanan ini.
               </p>
             </section>
 
             <section>
-              <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-blue-600"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 tracking-tight">
                 Mengapa Anda Membutuhkan Email 10 Menit Anonim?
-              </h3>
-              <p className="text-gray-600 leading-relaxed text-sm md:text-base text-justify">
-                Saat ini, hampir semua situs web, blog, forum, hingga penyedia layanan Wi-Fi publik mewajibkan Anda untuk mendaftar terlebih dahulu sebelum bisa melihat konten mereka. Namun, memberikan alamat email pribadi asli Anda kepada pihak yang tidak dikenal bisa sangat berbahaya. Kotak masuk Anda akan dibanjiri oleh email promosi (spam), dan yang lebih buruk, data email Anda bisa dijual ke pihak ketiga atau diretas. Dengan menggunakan layanan anonim dari {siteConfig.name}, Anda bisa mendaftar di situs mana pun tanpa rasa khawatir, sambil menjaga kotak masuk utama Anda tetap bersih 100%.
+              </h2>
+              <p className="text-base md:text-lg leading-relaxed text-justify">
+                Di era digital saat ini, hampir setiap situs web, aplikasi belanja, forum diskusi, hingga layanan Wi-Fi publik mengharuskan Anda untuk mendaftar menggunakan alamat email. Sayangnya, menyerahkan email utama Anda secara sembarangan sering kali berujung pada kotak masuk yang dibanjiri oleh buletin yang tidak diinginkan, pesan spam promosi, hingga potensi penjualan data kepada pihak ketiga. Dengan menggunakan email anonim dari {siteConfig.name}, Anda menciptakan perisai pelindung yang memisahkan identitas asli Anda dari ancaman privasi di internet.
               </p>
             </section>
 
             <section>
-              <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-blue-600"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></svg>
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 tracking-tight">
                 Bagaimana Cara Kerjanya?
-              </h3>
-              <p className="text-gray-600 leading-relaxed text-sm md:text-base text-justify">
-                Sistem kami bekerja dengan sangat praktis dan otomatis. Begitu Anda mengunjungi halaman ini, algoritma kami langsung membuatkan satu alamat email acak secara instan. Ketika sebuah website mengirimkan pesan, OTP, atau tautan verifikasi ke alamat tersebut, server canggih kami akan mencegat email tersebut dan menampilkannya langsung ke layar Anda secara <em>real-time</em>. Demi keamanan ekstra, pesan-pesan tersebut tidak akan kami simpan secara permanen dan akan dihapus secara berkala.
+              </h2>
+              <p className="text-base md:text-lg leading-relaxed text-justify">
+                Sistem kami beroperasi menggunakan infrastruktur perutean server awan yang aman dan serba otomatis. Ketika Anda mengunjungi situs kami, sebuah alamat email unik akan langsung dibuat khusus untuk Anda pada saat itu juga. Setiap kali ada pesan verifikasi yang dikirim ke alamat tersebut, server kami akan mencegatnya dan meneruskannya langsung ke layar Anda tanpa penundaan. Demi menjaga standar keamanan dan anonimitas tingkat tinggi, kami berpegang pada prinsip tanpa jejak. Semua pesan yang masuk beserta alamat email tersebut tidak akan disimpan selamanya di pusat data kami dan akan dihapus secara permanen dalam periode waktu tertentu.
               </p>
             </section>
 
             <section>
-              <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-blue-600"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><path d="m9 12 2 2 4-4"/></svg>
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 tracking-tight">
                 Cara Menggunakan Layanan Ini
-              </h3>
-              <ul className="list-decimal pl-5 md:pl-6 text-gray-600 space-y-2 text-sm md:text-base">
-                <li>Buka halaman utama web ini, dan Anda akan langsung melihat alamat email acak di bagian paling atas.</li>
-                <li>Klik tombol <strong>"Salin"</strong> untuk mengkopi alamat email tersebut.</li>
-                <li>Gunakan email yang telah Anda salin untuk mendaftar di situs web, aplikasi, atau game yang Anda inginkan.</li>
-                <li>Kembali ke halaman ini dan perhatikan bagian <strong>Kotak Masuk</strong>. Email verifikasi akan otomatis muncul dalam hitungan detik.</li>
-                <li>Klik pesan tersebut untuk membacanya, mengklik tautan verifikasi, atau mengambil kode OTP Anda.</li>
-              </ul>
+              </h2>
+              <p className="text-base md:text-lg leading-relaxed text-justify">
+                Menggunakan {siteConfig.name} dirancang agar sangat intuitif tanpa memerlukan keahlian teknis sama sekali. Saat Anda membuka halaman web ini, sistem akan langsung menampilkan satu alamat email acak yang siap pakai di bagian atas layar Anda. Anda cukup menyalin alamat email tersebut dan menempelkannya pada kolom pendaftaran situs atau aplikasi yang sedang Anda tuju. Setelah situs tersebut mengirimkan pesan atau kode OTP verifikasi, Anda hanya perlu kembali ke halaman ini. Pesan tersebut akan otomatis muncul secara ajaib di kotak masuk Anda tanpa perlu memuat ulang halaman web.
+              </p>
             </section>
 
-            <div className="bg-blue-50 border-l-4 border-blue-600 p-5 mt-8 rounded-r">
-              <h3 className="text-lg font-bold text-gray-900 mb-2">Kesimpulan</h3>
-              <p className="text-gray-700 leading-relaxed text-sm md:text-base">
-                Menggunakan layanan email sementara seperti <strong>{siteConfig.name}</strong> adalah langkah paling cerdas untuk melindungi identitas digital Anda saat ini. Ini adalah tameng terbaik Anda melawan peretas, spammer, dan pengumpul data. Berselancarlah di internet dengan bebas, aman, dan tanpa jejak!
+            <section>
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 tracking-tight">
+                Kesimpulan
+              </h2>
+              <p className="text-base md:text-lg leading-relaxed text-justify">
+                Memiliki akses ke alamat email sekali pakai kini bukan lagi sekadar pilihan alternatif, melainkan sebuah kebutuhan dasar untuk berselancar dengan aman di dunia maya. {siteConfig.name} hadir sebagai solusi instan untuk memastikan kotak masuk pribadi Anda tetap bersih dari tumpukan pesan sampah dan privasi Anda tidak pernah dikompromikan. Gunakan layanan ini setiap kali Anda meragukan keamanan sebuah situs web, dan nikmatilah kebebasan berinternet tanpa harus meninggalkan jejak digital yang merugikan.
               </p>
-            </div>
+            </section>
 
           </div>
-        </div>
+        </article>
         {/* ================= AKHIR AREA ARTIKEL SEO ================= */}
-
       </div>
     </main>
   );
